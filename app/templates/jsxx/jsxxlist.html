@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    
+    <link rel="stylesheet" href="/static/assets/css/bootstrap.css">
+    
+<link rel="stylesheet" href="/static/assets/vendors/simple-datatables/style.css">
+
+    <link rel="stylesheet" href="/static/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/static/assets/css/app.css">
+    <link rel="shortcut icon" href="/static/assets/images/favicon.svg" type="image/x-icon">
+</head>
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+
+
+   {% include "../menu.html" %}
+
+
+
+    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+</div>
+        </div>
+        <div id="main">
+    {% include "../header.html" %}
+            
+<div class="main-content container-fluid">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>教室信息列表</h3>
+
+            </div>
+
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+	<form name="form" method="get" action="">
+            <div class="card-responsive">
+
+                    <div class="layui-form-mid"></div>
+                             
+					教室名称:
+
+                                  <input type="text" autocomplete="off" name="jsmc" value="" class="layui-input">
+                           
+
+
+                                <button class="btn btn-primary mr-1 mb-1">查询</button>
+	
+
+               <table class="table"  id="table1">
+              <thead>
+                <tr>
+				<th>序号</th>
+						         <th >教室名称</th>
+
+						         <th >位置</th>
+
+						         <th >备注</th>
+
+					      
+			 <th >操作</th>
+                </tr>
+              </thead>
+            <TBODY id="table2">
+
+					      {% for value in list %}
+						<tr>
+						<td>{{ forloop.counter}}</td>
+
+					        <td  >{{ value.jsmc}}</td>
+
+					        <td  >{{ value.wz}}</td>
+
+					        <td  >{{ value.bz}}</td>
+
+
+					  
+						<td >
+                    <a href="/jsxx/jsxxmodify?id={{ value.id }}">修改</a> <a href="/jsxx/jsxxdetail?id={{ value.id }}">详情</a>
+                    <a onClick="javascript:return confirm('您确定要删除吗？')" href="/jsxx/jsxxdelete?id={{ value.id }}">删除</a>
+
+
+						</td>
+						</tr>
+                    {% endfor %}
+		    </TBODY>
+            </table>
+	    	 <span id="spanFirst">第一页</span> <span id="spanPre">上一页</span> <span id="spanNext">下一页</span> <span id="spanLast">最后一页</span> 第<span id="spanPageNum"></span>页/共<span id="spanTotalPage"></span>页
+		</form>
+
+	      {% if messages %}
+    <script>
+      {% for msg in messages %}
+        alert('{{ msg.message }}');
+      {% endfor %}
+    </script>
+  {% endif %}
+
+            </div>
+        </div>
+
+    </section>
+</div>
+
+        {% include "../footer.html" %}
+        </div>
+    </div>
+    <script src="/static/assets/js/feather-icons/feather.min.js"></script>
+    <script src="/static/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/static/assets/js/app.js"></script>
+    
+
+<script src="/static/assets/js/vendors.js"></script>
+
+    <script src="/static/assets/js/main.js"></script>
+
+    
+<script>
+      var theTable = document.getElementById("table2");
+      var totalPage = document.getElementById("spanTotalPage");
+      var pageNum = document.getElementById("spanPageNum");
+
+
+      var spanPre = document.getElementById("spanPre");
+      var spanNext = document.getElementById("spanNext");
+      var spanFirst = document.getElementById("spanFirst");
+      var spanLast = document.getElementById("spanLast");
+
+
+      var numberRowsInTable = theTable.rows.length;
+      var pageSize = 20;
+      var page = 1;
+
+
+      //下一页
+     function next() {
+
+
+          hideTable();
+
+
+          currentRow = pageSize * page;
+          maxRow = currentRow + pageSize;
+          if (maxRow > numberRowsInTable) maxRow = numberRowsInTable;
+          for (var i = currentRow; i < maxRow; i++) {
+              theTable.rows[i].style.display = '';
+          }
+          page++;
+
+
+          if (maxRow == numberRowsInTable) { nextText(); lastText(); }
+          showPage();
+          preLink();
+          firstLink();
+      }
+
+
+      //上一页
+     function pre() {
+
+
+          hideTable();
+
+
+          page--;
+
+
+          currentRow = pageSize * page;
+          maxRow = currentRow - pageSize;
+          if (currentRow > numberRowsInTable) currentRow = numberRowsInTable;
+          for (var i = maxRow; i < currentRow; i++) {
+              theTable.rows[i].style.display = '';
+          }
+
+
+
+
+          if (maxRow == 0) { preText(); firstText(); }
+          showPage();
+          nextLink();
+          lastLink();
+      }
+
+
+      //第一页
+     function first() {
+          hideTable();
+          page = 1;
+          for (var i = 0; i < pageSize; i++) {
+              theTable.rows[i].style.display = '';
+          }
+          showPage();
+
+
+          preText();
+          nextLink();
+          lastLink();
+      }
+
+
+      //最后一页
+     function last() {
+          hideTable();
+          page = pageCount();
+          currentRow = pageSize * (page - 1);
+          for (var i = currentRow; i < numberRowsInTable; i++) {
+              theTable.rows[i].style.display = '';
+          }
+          showPage();
+
+
+          preLink();
+          nextText();
+          firstLink();
+      }
+
+
+      function hideTable() {
+          for (var i = 0; i < numberRowsInTable; i++) {
+              theTable.rows[i].style.display = 'none';
+          }
+      }
+
+
+      function showPage() {
+          pageNum.innerHTML = page;
+      }
+
+
+      //总共页数
+     function pageCount() {
+          var count = 0;
+          if (numberRowsInTable % pageSize != 0) count = 1;
+          return parseInt(numberRowsInTable / pageSize) + count;
+      }
+
+
+      //显示链接
+     function preLink() { spanPre.innerHTML = "<a href='javascript:pre();'>上一页</a>"; }
+      function preText() { spanPre.innerHTML = "上一页"; }
+
+
+      function nextLink() { spanNext.innerHTML = "<a href='javascript:next();'>下一页</a>"; }
+      function nextText() { spanNext.innerHTML = "下一页"; }
+
+
+      function firstLink() { spanFirst.innerHTML = "<a href='javascript:first();'>第一页</a>"; }
+      function firstText() { spanFirst.innerHTML = "第一页"; }
+
+
+      function lastLink() { spanLast.innerHTML = "<a href='javascript:last();'>最后一页</a>"; }
+      function lastText() { spanLast.innerHTML = "最后一页"; }
+
+
+      //隐藏表格
+     function hide() {
+          for (var i = pageSize; i < numberRowsInTable; i++) {
+              theTable.rows[i].style.display = 'none';
+          }
+
+
+          totalPage.innerHTML = pageCount();
+          pageNum.innerHTML = '1';
+
+
+          nextLink();
+          lastLink();
+      }
+
+
+      hide();
+ </script>
+</body>
+</html>
+
+
+
+

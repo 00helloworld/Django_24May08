@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改签到</title>
+    
+    <link rel="stylesheet" href="/static/assets/css/bootstrap.css">
+    
+<link rel="stylesheet" href="/static/assets/vendors/simple-datatables/style.css">
+
+    <link rel="stylesheet" href="/static/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/static/assets/css/app.css">
+    <link rel="shortcut icon" href="/static/assets/images/favicon.svg" type="image/x-icon">
+</head>
+<script language="javascript">
+function checkDo(){
+
+	if(form.sksj.value==""){
+	alert("上课时间不能为空");
+	return false;
+	form.sksj.focus();
+	}
+	if(form.xs.value==""){
+	alert("学生不能为空");
+	return false;
+	form.xs.focus();
+	}
+	if(form.zt.value==""){
+	alert("状态不能为空");
+	return false;
+	form.zt.focus();
+	}
+	if(form.rq.value==""){
+	alert("日期不能为空");
+	return false;
+	form.rq.focus();
+	}
+	if(form.qdsj.value==""){
+	alert("签到时间不能为空");
+	return false;
+	form.qdsj.focus();
+	}
+	if(form.qtsj.value==""){
+	alert("签退时间不能为空");
+	return false;
+	form.qtsj.focus();
+	}
+	if(form.kc.value==""){
+	alert("课程不能为空");
+	return false;
+	form.kc.focus();
+	}
+	
+	form.action="";
+	form.submit();
+	}
+</script>
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+
+
+   {% include "../menu.html" %}
+
+
+
+    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+</div>
+        </div>
+        <div id="main">
+    {% include "../header.html" %}
+            
+<div class="main-content container-fluid">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>修改签到</h3>
+
+            </div>
+
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+
+
+            <div class="card-header">
+            <h4 class="card-title">填写相关信息</h4>
+            </div>
+            <div class="card-content">
+            <div class="card-body">
+                <form class="form form-horizontal"   name="form" action="" method="post">
+                {% csrf_token %}
+
+
+	
+
+                <div class="form-body">
+                    <div class="row">
+
+
+
+
+			
+                    <div class="col-md-1">
+                        <label>上课时间:</label>
+                    </div>
+                    <div class="col-md-11 form-group">
+                        <input type="text" class="form-control" name="sksj" id="sksj" required  placeholder="请输入上课时间" value="{{ obj.sksj }}" required>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-1">
+                        <label>学生:</label>
+                    </div>
+                    <div class="col-md-11 form-group">
+                        <input type="text" class="form-control" name="xs" id="xs" required  placeholder="请输入学生" value="{{ obj.xs }}" required>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-1">
+                        <label>状态:</label>
+                    </div>
+                    <div class="col-md-11 form-group">
+                        <input type="text" class="form-control" name="zt" id="zt" required  placeholder="请输入状态" value="{{ obj.zt }}" required>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-1">
+                        <label>日期:</label>
+                    </div>
+                    <div class="col-md-11 form-group">
+                        <input type="text" class="form-control" name="rq" id="rq" required  placeholder="请输入日期" value="{{ obj.rq }}" required>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-1">
+                        <label>签到时间:</label>
+                    </div>
+                    <div class="col-md-11 form-group">
+                        <input type="text" class="form-control" name="qdsj" id="qdsj" required  placeholder="请输入签到时间" value="{{ obj.qdsj }}" required>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-1">
+                        <label>签退时间:</label>
+                    </div>
+                    <div class="col-md-11 form-group">
+                        <input type="text" class="form-control" name="qtsj" id="qtsj" required  placeholder="请输入签退时间" value="{{ obj.qtsj }}" required>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-1">
+                        <label>课程:</label>
+                    </div>
+                    <div class="col-md-11 form-group">
+                        <input type="text" class="form-control" name="kc" id="kc" required  placeholder="请输入课程" value="{{ obj.kc }}" required>
+                    </div>
+
+
+                  <input type="hidden" name="id" value="{{ obj.id }} ">
+
+                    <div class="col-sm-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary mr-1 mb-1">保存</button>
+                        <button type="reset" class="btn btn-secondary mr-1 mb-1">重置</button>
+                    </div>
+                    </div>
+                </div>
+                </form>
+		    {% if messages %}
+    <script>
+      {% for msg in messages %}
+        alert('{{ msg.message }}');
+      {% endfor %}
+    </script>
+  {% endif %}
+            </div>
+            </div>
+
+        </div>
+
+    </section>
+</div>
+
+        {% include "../footer.html" %}
+        </div>
+    </div>
+    <script src="/static/assets/js/feather-icons/feather.min.js"></script>
+    <script src="/static/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/static/assets/js/app.js"></script>
+    
+<script src="/static/assets/vendors/simple-datatables/simple-datatables.js"></script>
+<script src="/static/assets/js/vendors.js"></script>
+
+    <script src="/static/assets/js/main.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

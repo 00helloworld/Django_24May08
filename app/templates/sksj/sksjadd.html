@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加上课时间</title>
+    
+    <link rel="stylesheet" href="/static/assets/css/bootstrap.css">
+    
+<link rel="stylesheet" href="/static/assets/vendors/simple-datatables/style.css">
+
+    <link rel="stylesheet" href="/static/assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
+    <link rel="stylesheet" href="/static/assets/css/app.css">
+    <link rel="shortcut icon" href="/static/assets/images/favicon.svg" type="image/x-icon">
+</head>
+<script language="javascript">
+function checkDo(){
+
+	if(form.lsh.value==""){
+	alert("流水号不能为空");
+	return false;
+	form.lsh.focus();
+	}
+	if(form.xq.value==""){
+	alert("星期不能为空");
+	return false;
+	form.xq.focus();
+	}
+	if(form.sjd.value==""){
+	alert("时间段不能为空");
+	return false;
+	form.sjd.focus();
+	}
+	if(form.kc.value==""){
+	alert("课程不能为空");
+	return false;
+	form.kc.focus();
+	}
+	if(form.js.value==""){
+	alert("教室不能为空");
+	return false;
+	form.js.focus();
+	}
+	
+	form.action="";
+	form.submit();
+	}
+</script>
+<body>
+    <div id="app">
+        <div id="sidebar" class='active'>
+            <div class="sidebar-wrapper active">
+
+
+   {% include "../menu.html" %}
+
+
+
+    <button class="sidebar-toggler btn x"><i data-feather="x"></i></button>
+</div>
+        </div>
+        <div id="main">
+    {% include "../header.html" %}
+            
+<div class="main-content container-fluid">
+    <div class="page-title">
+        <div class="row">
+            <div class="col-12 col-md-6 order-md-1 order-last">
+                <h3>添加上课时间</h3>
+
+            </div>
+
+        </div>
+    </div>
+    <section class="section">
+        <div class="card">
+
+
+            <div class="card-header">
+            <h4 class="card-title">填写相关信息</h4>
+            </div>
+            <div class="card-content">
+            <div class="card-body">
+                <form class="form form-horizontal"   name="form" action="" method="post">
+                {% csrf_token %}
+
+
+	
+
+                <div class="form-body">
+                    <div class="row">
+
+
+
+
+			
+                    <div class="col-md-2">
+                        <label>流水号:</label>
+                    </div>
+                    <div class="col-md-10 form-group">
+                        <input type="text" class="form-control" name="lsh" id="lsh" required value="{{ lsh }}" readonly placeholder="请输入流水号" required>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-2">
+                        <label>星期:</label>
+                    </div>
+                    <div class="col-md-10 form-group">
+
+
+                             <select class="form-select" name="xq" required>
+                               {% for value in xqlist %}
+                        <option value="{{ value.xq}}">{{ value.xq}}</option>
+                          {% endfor %}
+
+
+                        </select>
+
+
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-2">
+                        <label>时间段:</label>
+                    </div>
+                    <div class="col-md-10 form-group">
+                         <select class="form-select" name="sjd" required>
+                               {% for value in sjdlist %}
+                        <option value="{{ value.sjd}}">{{ value.sjd}}</option>
+                          {% endfor %}
+
+
+                        </select>   </div>
+
+
+
+
+			
+                    <div class="col-md-2">
+                        <label>课程:</label>
+                    </div>
+                    <div class="col-md-10 form-group">
+                        <select class="form-select" name="kc" required>
+                               {% for value in kclist %}
+                        <option value="{{ value.kcmc}}">{{ value.kcmc}}</option>
+                          {% endfor %}
+
+
+                        </select>
+                    </div>
+
+
+
+
+			
+                    <div class="col-md-2">
+                        <label>教室:</label>
+                    </div>
+                    <div class="col-md-10 form-group">
+                        <select class="form-select" name="js" required>
+                               {% for value in jsxxlist %}
+                        <option value="{{ value.jsmc}}">{{ value.jsmc}}</option>
+                          {% endfor %}
+
+
+                        </select>
+                    </div>
+
+
+                  
+
+                    <div class="col-sm-12 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary mr-1 mb-1">保存</button>
+                        <button type="reset" class="btn btn-secondary mr-1 mb-1">重置</button>
+                    </div>
+                    </div>
+                </div>
+                </form>
+		    {% if messages %}
+    <script>
+      {% for msg in messages %}
+        alert('{{ msg.message }}');
+      {% endfor %}
+    </script>
+  {% endif %}
+            </div>
+            </div>
+
+        </div>
+
+    </section>
+</div>
+
+        {% include "../footer.html" %}
+        </div>
+    </div>
+    <script src="/static/assets/js/feather-icons/feather.min.js"></script>
+    <script src="/static/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="/static/assets/js/app.js"></script>
+    
+<script src="/static/assets/vendors/simple-datatables/simple-datatables.js"></script>
+<script src="/static/assets/js/vendors.js"></script>
+
+    <script src="/static/assets/js/main.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

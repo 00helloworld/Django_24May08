@@ -1,0 +1,13 @@
+*.pyc
+*~
+__pycache__
+.DS_Store
+
+*.csv
+
+*.docx
+*.doc
+*.pdf
+
+*.7z
+*.vsd
