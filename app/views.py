@@ -1,6 +1,14 @@
 from django.shortcuts import render,HttpResponse,redirect
 from app import models
 
+import random
+import string
+import base64
+from io import BytesIO
+import matplotlib
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 from django.db.models import Sum
 from django.db.models import Count
 from django.contrib import messages
@@ -34,9 +42,11 @@ def login(request):
             if qx == "学生":
                 obj = models.xuesheng.objects.filter(yhm=yhm, mm=mm).first()
                 request.session['id'] = obj.id
+                request.session['yhm'] = yhm
             if qx == "教师":
                 obj = models.jiaoshi.objects.filter(yhm=yhm, mm=mm).first()
                 request.session['id'] = obj.id
+                request.session['yhm'] = yhm
             if qx == "管理员":
                 obj = models.gly.objects.filter(yhm=yhm, mm=mm).first()
                 request.session['id'] = obj.id
@@ -48,13 +58,13 @@ def login(request):
         return redirect('/sksj/kebiao')
 
 def out(request):
-       	request.session['id'] = ''
-        request.session['yhm'] = ""
-        request.session['mm'] =""
-        request.session['qx'] = ""
-        request.session.flush()
+    request.session['id'] = ''
+    request.session['yhm'] = ""
+    request.session['mm'] =""
+    request.session['qx'] = ""
+    request.session.flush()
 
-        return redirect('/login')
+    return redirect('/login')
 
 #添加管理员
 def glyadd(request):
@@ -620,17 +630,17 @@ def sksjadd(request):
    # 添加上课时间
 def kebiao(request):
 
-           curr_time = datetime.now()
-           timestamp = datetime.strftime(curr_time, '%Y%m%d%H%M%S')
-           # print(timestamp)
-           xqlist = models.xingqi.objects.all()  # 获取星期表所有的数据
-           sjdlist = models.sjd.objects.all()  # 获取时间段表所有的数据
-           kclist = models.kecheng.objects.all()  # 课程
-           jsxxlist = models.jsxx.objects.all()  # 教师
-           sksjlist=models.sksj.objects.all() #上课时间
-           return render(request, "sksj/kebiao.html",
-                         {'lsh': timestamp, 'xqlist': xqlist, 'sjdlist': sjdlist, 'sksjlist': sksjlist,
-                          'jsxxlist': jsxxlist})
+    curr_time = datetime.now()
+    timestamp = datetime.strftime(curr_time, '%Y%m%d%H%M%S')
+    # print(timestamp)
+    xqlist = models.xingqi.objects.all()  # 获取星期表所有的数据
+    sjdlist = models.sjd.objects.all()  # 获取时间段表所有的数据
+    kclist = models.kecheng.objects.all()  # 课程
+    jsxxlist = models.jsxx.objects.all()  # 教师
+    sksjlist=models.sksj.objects.all() #上课时间
+    return render(request, "sksj/kebiao.html",
+                    {'lsh': timestamp, 'xqlist': xqlist, 'sjdlist': sjdlist, 'sksjlist': sksjlist,
+                    'jsxxlist': jsxxlist})
 
 
 
@@ -713,6 +723,92 @@ def sksjdelete(request):
         messages.success(request, "操作成功")
         return redirect('/sksj/sksjlist')
     return HttpResponse("删除失败")
+
+def generate_qiandao(request):
+    if request.method == 'GET':
+        curr_time = datetime.now()
+        timestamp = datetime.strftime(curr_time, '%Y%m%d%H%M%S')
+        kclist=models.kecheng.objects.all()#课程
+        return render(request, "qiandao/generate_qiandao.html",{'lsh':timestamp,'sjdlist':sjdlist,'kclist':kclist,'jsxxlist':jsxxlist})
+    if request.method == 'POST':
+        kclist=models.kecheng.objects.all()#课程
+        curr_time = datetime.now()
+        timestamp = datetime.strftime(curr_time, '%Y%m%d%H%M%S')
+        kc = request.POST.get('kc') #课程
+        code = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+        rq = datetime.strftime(curr_time, '%Y%m%d')
+        qdsj = timestamp
+
+        latest_data = models.qiandao_meta.objects.filter(kc=kc).order_by('-qdsj').first()
+        if latest_data:
+            old_qdsj = latest_data.qdsj
+            old_time = datetime.strptime(old_qdsj, '%Y%m%d%H%M%S')
+            time_diff = abs(curr_time - old_time)
+            if time_diff > timedelta(minutes=60):
+                models.qiandao_meta.objects.create(code=code, rq=rq, qdsj=qdsj, kc=kc, )
+            else:
+                code = latest_data.code
+        else:
+            models.qiandao_meta.objects.create(code=code, rq=rq, qdsj=qdsj, kc=kc, )
+        
+        return render(request, "qiandao/generate_qiandao.html",{'lsh':timestamp,'sjdlist':sjdlist,'kclist':kclist,'jsxxlist':jsxxlist, 'code':code, 'course':kc})
+
+
+def add_qiandao(request):
+    if request.method == 'GET':
+        curr_time = datetime.now()
+        timestamp = datetime.strftime(curr_time, '%Y%m%d%H%M%S')
+        kclist=models.kecheng.objects.all()#课程
+        return render(request, "qiandao/add_qiandao.html",{'lsh':timestamp,'sjdlist':sjdlist,'kclist':kclist,'jsxxlist':jsxxlist})
+    if request.method == 'POST':
+        xs=request.session.get('yhm')#学生
+        kclist=models.kecheng.objects.all()#课程
+        curr_time = datetime.now()
+        timestamp = datetime.strftime(curr_time, '%Y%m%d%H%M%S')
+        kc = request.POST.get('kc') #课程
+        code = request.POST.get('code')
+        rq = datetime.strftime(curr_time, '%Y%m%d')
+        qdsj = timestamp
+
+        latest_data = models.qiandao_meta.objects.filter(kc=kc).order_by('-qdsj').first()
+        if latest_data:
+            old_qdsj = latest_data.qdsj
+            old_time = datetime.strptime(old_qdsj, '%Y%m%d%H%M%S')
+            time_diff = abs(curr_time - old_time)
+            if time_diff > timedelta(minutes=60):
+                # 签到过期
+                messages.success(request, "签到过期")
+                pass
+            elif code != latest_data.code:
+                # 签到码错误
+                messages.success(request, "签到码错误")
+                pass
+            else:
+                qiandao = models.qiandao.objects.filter(kc=kc, xs=xs).order_by('-qdsj').first()
+                if qiandao:
+                    # 已经签到
+                    messages.success(request, "已经签到")
+                    pass
+                else:
+                    # 签到成功
+                    xs=request.session.get('yhm')#学生
+                    zt='签到'#状态
+                    qtsj='no'#签退时间
+                    models.qiandao.objects.create(sksj=qdsj, xs=xs, zt=zt, rq=rq, qdsj=qdsj, qtsj=qtsj, kc=kc, )
+                    messages.success(request, "签到成功")
+        else:
+            # 签到成功
+            xs=request.session.get('yhm')#学生
+            zt='签到'#状态
+            qtsj='no'#签退时间
+            models.qiandao.objects.create(sksj=qdsj, xs=xs, zt=zt, rq=rq, qdsj=qdsj, qtsj=qtsj, kc=kc, )
+            messages.success(request, "签到成功")
+
+        return render(request, "qiandao/add_qiandao.html",{'lsh':timestamp,'sjdlist':sjdlist,'kclist':kclist,'jsxxlist':jsxxlist})
+
+
+
+
 
 #添加签到
 def qiandaoadd(request):
@@ -991,4 +1087,124 @@ def jsjydelete(request):
         messages.success(request, "操作成功")
         return redirect('/jsjy/jsjylist')
     return HttpResponse("删除失败")
+
+
+def qiandao_data(request):
+    kclist=models.kecheng.objects.all()#课程
+    if request.method == 'POST':
+        kc = request.POST.get('kc')
+        qiandao = models.qiandao.objects.filter(kc=kc).all()
+        student = models.xuesheng.objects.all()
+        ratios = [round(len(qiandao)/len(student), 1), round(1-len(qiandao)/len(student), 1)]
+        categories = ['Present', 'Absent']
+        matplotlib.use('Agg')  # 不出现画图的框
+        # plt.rcParams['font.sans-serif'] = ['SimHei']  # 这两行用来显示汉字
+        # plt.rcParams['axes.unicode_minus'] = False
+        # plt.title('签到情况')
+        plt.pie(ratios, labels=categories, autopct='%1.1f%%', startangle=140)
+        plt.axis('equal')  # 保持图形是圆形
+
+        sio = BytesIO()
+        plt.savefig(sio, format='png', bbox_inches='tight', pad_inches=0.0)
+        data = base64.encodebytes(sio.getvalue()).decode()
+        src = 'data:image/png;base64,' + str(data)
+        # 记得关闭，不然画出来的图是重复的
+        plt.close()
+        print(ratios, kc)
+        return render(request, 'qiandao/qiandao_data.html', {'kc': kc,'src': src, 'kclist':kclist})
+    return render(request, 'qiandao/qiandao_data.html', {'kclist':kclist})
+
+    # matplotlib.use('Agg')  # 不出现画图的框
+    # plt.rcParams['font.sans-serif'] = ['SimHei']  # 这两行用来显示汉字
+    # plt.rcParams['axes.unicode_minus'] = False
+    # sns.boxplot([133,123,899,198,849,180,844])  # 箱线图
+    # plt.title('title', loc='center')
+    # sio = BytesIO()
+    # plt.savefig(sio, format='png', bbox_inches='tight', pad_inches=0.0)
+    # data = base64.encodebytes(sio.getvalue()).decode()
+    # src = 'data:image/png;base64,' + str(data)
+    # # 记得关闭，不然画出来的图是重复的
+    # plt.close()
+    # return render(request, 'qiandao/qiandao_data.html', {'src': src})
+
+
+
  
+def init_data(request):
+    # admin
+    yhm = 'admin' #用户名
+    mm = '123' #密码
+    xm = 'admin' #姓名
+    res = models.gly.objects.filter(yhm=yhm).count()
+    if res == 0:
+        models.gly.objects.create(yhm=yhm, mm=mm, xm=xm, )
+    # teacher
+    for i in range(2):
+        yhm = f'teacher_{i}' #用户名
+        mm = '123' #密码
+        xm = yhm #姓名
+        lxdh = '123456789' #联系电话
+        zc = 'dasfdsgdsa' #职称
+        res = models.jiaoshi.objects.filter(yhm=yhm).count()
+        if res == 0:
+            models.jiaoshi.objects.create(yhm=yhm, mm=mm, xm=xm, lxdh=lxdh, zc=zc, )
+    # student
+    for i in range(100):
+        yhm = f'student_{i}' #用户名
+        mm = '123' #密码
+        xm = yhm #姓名
+        lxdh = '12368768574' #联系电话
+        zy = 'cdsagsdga' #专业
+
+        res = models.xuesheng.objects.filter(yhm=yhm).count()
+        if res == 0:
+            models.xuesheng.objects.create(yhm=yhm, mm=mm, xm=xm, lxdh=lxdh, zy=zy, )
+    # week
+    for i in ['一', '二', '三', '四', '五', '六', '日']:
+        xq = i #星期
+        res = models.xingqi.objects.filter(xq=xq).count()
+        if res == 0:
+            models.xingqi.objects.create(xq=xq, )
+    # time
+    for i in ['上午8-10', '上午10-12', '下午1-3', '下午3-5']:
+        sjd = i #时间段
+        res = models.sjd.objects.filter(sjd=sjd).count()
+        if res == 0:
+            models.sjd.objects.create(sjd=sjd, )
+
+    # classroom
+    for i in range(100):
+        jsmc = f'classroom_{i+1}' #教室名称
+        wz = '主楼' #位置
+        bz = '备注信息' #备注
+
+        res = models.jsxx.objects.filter(jsmc=jsmc).count()
+        if res == 0:
+            models.jsxx.objects.create(jsmc=jsmc, wz=wz, bz=bz, )
+
+    # course
+
+    return HttpResponse("初始化数据成功")
+
+
+def init_qiandao_data(request):
+    kclist=models.kecheng.objects.all()
+    students = models.xuesheng.objects.all()
+
+    sksj = '20240428001025'
+    zt = '已完成'
+    rq = '20240428'
+    qdsj = sksj
+    qtsj = '2024-04-28 00:10:41'
+
+    for kcs in kclist:
+        kc = kcs.kcmc
+        for student in students:
+            xs = student.xm
+            if random.randint(1, 10)>9:
+                continue
+            else:
+                qiandao = models.qiandao.objects.filter(kc=kc, xs=xs).count()
+                if qiandao == 0:
+                    models.qiandao.objects.create(sksj=qdsj, xs=xs, zt=zt, rq=rq, qdsj=qdsj, qtsj=qtsj, kc=kc, )
+    return HttpResponse("初始化数据成功")

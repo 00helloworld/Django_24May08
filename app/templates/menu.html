@@ -1,216 +1,224 @@
-
-
-
 <div class="sidebar-menu">
-        <ul class="menu">
+    <ul class="menu">
 
 
-                <li class='sidebar-title'><h2>教师管理系统</h2></li>
+        <li class='sidebar-title'>
+            <h2>教室管理系统</h2>
+        </li>
+        <li >
+            <a>初始化测试数据</a>
+        </li>
+        <li><a href="/init_data">基础数据-省的新建</a></li>
+        <li><a href="/init_qiandao_data">签到数据-数据看板</a></li>
+        <li><a href="/init_jiaoshi_data">教室数据-数据看板</a></li>
 
 
 
-	
-
-                        {% if request.session.qx == "管理员" %}
-		                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i data-feather="file-text" width="20"></i>
-                        <span>用户管理</span>
-                    </a>
-
-                    <ul class="submenu ">
-
-                        <li>
-                            <a href="/gly/glyadd">     <i data-feather="layers" width="20"></i>添加管理员</a>
-                        </li>
-
-                        <li>
-                            <a href="/gly/glylist">     <i data-feather="layers" width="20"></i>管理员管理</a>
-                        </li>
-
-                           <li>
-                            <a href="/jiaoshi/jiaoshiadd">     <i data-feather="layers" width="20"></i>添加教师</a>
-                        </li>
-
-                        <li>
-                            <a href="/jiaoshi/jiaoshilist">     <i data-feather="layers" width="20"></i>教师管理</a>
-                        </li>
-   <li>
-                            <a href="/xuesheng/xueshengadd">     <i data-feather="layers" width="20"></i>添加学生</a>
-                        </li>
-
-                        <li>
-                            <a href="/xuesheng/xueshenglist">     <i data-feather="layers" width="20"></i>学生管理</a>
-                        </li>
 
 
-                    </ul>
+        {% if request.session.qx == "管理员" %}
+        <li class="sidebar-item  has-sub">
+            <a href="#" class='sidebar-link'>
+                <i data-feather="file-text" width="20"></i>
+                <span>用户管理</span>
+            </a>
 
+            <ul class="submenu ">
+
+                <li>
+                    <a href="/gly/glyadd"> <i data-feather="layers" width="20"></i>添加管理员</a>
+                </li>
+
+                <li>
+                    <a href="/gly/glylist"> <i data-feather="layers" width="20"></i>管理员管理</a>
+                </li>
+
+                <li>
+                    <a href="/jiaoshi/jiaoshiadd"> <i data-feather="layers" width="20"></i>添加教师</a>
+                </li>
+
+                <li>
+                    <a href="/jiaoshi/jiaoshilist"> <i data-feather="layers" width="20"></i>教师管理</a>
+                </li>
+                <li>
+                    <a href="/xuesheng/xueshengadd"> <i data-feather="layers" width="20"></i>添加学生</a>
+                </li>
+
+                <li>
+                    <a href="/xuesheng/xueshenglist"> <i data-feather="layers" width="20"></i>学生管理</a>
                 </li>
 
 
+            </ul>
+
+        </li>
 
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i data-feather="file-text" width="20"></i>
-                        <span>教室信息管理</span>
-                    </a>
 
-                    <ul class="submenu ">
 
-                        <li>
-                            <a href="/jsxx/jsxxadd">     <i data-feather="layers" width="20"></i>添加教室信息</a>
-                        </li>
+        <li class="sidebar-item  has-sub">
+            <a href="#" class='sidebar-link'>
+                <i data-feather="file-text" width="20"></i>
+                <span>教室信息管理</span>
+            </a>
 
-                        <li>
-                            <a href="/jsxx/jsxxlist">     <i data-feather="layers" width="20"></i>教室信息管理</a>
-                        </li>
+            <ul class="submenu ">
 
-                    </ul>
-
+                <li>
+                    <a href="/jsxx/jsxxadd"> <i data-feather="layers" width="20"></i>添加教室信息</a>
                 </li>
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i data-feather="file-text" width="20"></i>
-                        <span>基础信息管理</span>
-                    </a>
+                <li>
+                    <a href="/jsxx/jsxxlist"> <i data-feather="layers" width="20"></i>教室信息管理</a>
+                </li>
 
-                    <ul class="submenu ">
+            </ul>
 
-                        <li>
-                            <a href="/xingqi/xingqiadd">     <i data-feather="layers" width="20"></i>添加星期</a>
-                        </li>
+        </li>
 
-                        <li>
-                            <a href="/xingqi/xingqilist">     <i data-feather="layers" width="20"></i>星期管理</a>
-                        </li>
-                          <li>
-                            <a href="/sjd/sjdadd">     <i data-feather="layers" width="20"></i>添加时间段</a>
-                        </li>
+        <li class="sidebar-item  has-sub">
+            <a href="#" class='sidebar-link'>
+                <i data-feather="file-text" width="20"></i>
+                <span>基础信息管理</span>
+            </a>
 
-                        <li>
-                            <a href="/sjd/sjdlist">     <i data-feather="layers" width="20"></i>时间段管理</a>
-                        </li>
+            <ul class="submenu ">
 
-                    </ul>
+                <li>
+                    <a href="/xingqi/xingqiadd"> <i data-feather="layers" width="20"></i>添加星期</a>
+                </li>
 
+                <li>
+                    <a href="/xingqi/xingqilist"> <i data-feather="layers" width="20"></i>星期管理</a>
+                </li>
+                <li>
+                    <a href="/sjd/sjdadd"> <i data-feather="layers" width="20"></i>添加时间段</a>
+                </li>
+
+                <li>
+                    <a href="/sjd/sjdlist"> <i data-feather="layers" width="20"></i>时间段管理</a>
+                </li>
+
+            </ul>
+
+        </li>
+
+
+
+        <li class="sidebar-item  has-sub">
+            <a href="#" class='sidebar-link'>
+                <i data-feather="file-text" width="20"></i>
+                <span>课程管理</span>
+            </a>
+
+            <ul class="submenu ">
+
+                <li>
+                    <a href="/kecheng/kechengadd"> <i data-feather="layers" width="20"></i>添加课程</a>
+                </li>
+
+                <li>
+                    <a href="/kecheng/kechenglist"> <i data-feather="layers" width="20"></i>课程管理</a>
+                </li>
+
+            </ul>
+
+        </li>
+
+        {% endif %}
+
+        <li class="sidebar-item  has-sub">
+            <a href="#" class='sidebar-link'>
+                <i data-feather="file-text" width="20"></i>
+                <span>上课时间管理</span>
+            </a>
+
+            <ul class="submenu ">
+
+                {% if request.session.qx == "教师" %}
+                <li>
+                    <a href="/sksj/sksjadd"> <i data-feather="layers" width="20"></i>添加上课时间</a>
+                </li>
+
+                <li>
+                    <a href="/sksj/sksjlist"> <i data-feather="layers" width="20"></i>上课时间管理</a>
+                </li>
+                {% endif %}
+                <li>
+                    <a href="/sksj/kebiao"> <i data-feather="layers" width="20"></i>课表</a>
+                </li>
+
+            </ul>
+
+        </li>
+
+        <li class="sidebar-item  has-sub">
+            <a href="#" class='sidebar-link'>
+                <i data-feather="file-text" width="20"></i>
+                <span>签到管理</span>
+            </a>
+
+            <ul class="submenu ">
+                {% if request.session.qx == "学生" %}
+                <li>
+                    <a href="/qiandao/add_qiandao"> <i data-feather="layers" width="20"></i>上课签到</a>
+                </li>
+
+                <li>
+                    <a href="/qiandao/qiandaomylist"> <i data-feather="layers" width="20"></i>我的签到信息</a>
+                </li>
+                {% endif %}
+
+                {% if request.session.qx == "管理员" or request.session.qx == "教师" %}
+
+                <li>
+                    <a href="/qiandao/qiandaolist"> <i data-feather="layers" width="20"></i>签到管理</a>
+                </li>
+                <li>
+                    <a href="/qiandao/generate_qiandao"> <i data-feather="layers" width="20"></i>发起签到</a>
+                </li>
+                <li>
+                    <a href="/qiandao/qiandao_data"> <i data-feather="layers" width="20"></i>数据看板</a>
+                </li>
+                {% endif %}
+            </ul>
+
+        </li>
+
+        <li class="sidebar-item  has-sub">
+            <a href="#" class='sidebar-link'>
+                <i data-feather="file-text" width="20"></i>
+                <span>教室借用管理</span>
+            </a>
+
+            <ul class="submenu ">
+
+
+                {% if request.session.qx == "学生" %}
+                <li>
+                    <a href="/jsjy/jsjyadd"> <i data-feather="layers" width="20"></i>申请教室借用</a>
                 </li>
 
 
-
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i data-feather="file-text" width="20"></i>
-                        <span>课程管理</span>
-                    </a>
-
-                    <ul class="submenu ">
-
-                        <li>
-                            <a href="/kecheng/kechengadd">     <i data-feather="layers" width="20"></i>添加课程</a>
-                        </li>
-
-                        <li>
-                            <a href="/kecheng/kechenglist">     <i data-feather="layers" width="20"></i>课程管理</a>
-                        </li>
-
-                    </ul>
-
+                <li>
+                    <a href="/jsjy/jsjymylist"> <i data-feather="layers" width="20"></i>我的教室借用</a>
                 </li>
 
                 {% endif %}
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i data-feather="file-text" width="20"></i>
-                        <span>上课时间管理</span>
-                    </a>
+                {% if request.session.qx == "管理员" or request.session.qx == "教师" %}
 
-                    <ul class="submenu ">
-
-                           {% if request.session.qx == "教师" %}
-                        <li>
-                            <a href="/sksj/sksjadd">     <i data-feather="layers" width="20"></i>添加上课时间</a>
-                        </li>
-
-                        <li>
-                            <a href="/sksj/sksjlist">     <i data-feather="layers" width="20"></i>上课时间管理</a>
-                        </li>
-                        {% endif %}
-    <li>
-                            <a href="/sksj/kebiao">     <i data-feather="layers" width="20"></i>课表</a>
-                        </li>
-
-                    </ul>
-
+                <li>
+                    <a href="/jsjy/jsjylist"> <i data-feather="layers" width="20"></i>教室借用管理</a>
                 </li>
-
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i data-feather="file-text" width="20"></i>
-                        <span>签到管理</span>
-                    </a>
-
-                    <ul class="submenu ">
-                           {% if request.session.qx == "学生" %}
-                        <li>
-                            <a href="/sksj/sksjmylist">     <i data-feather="layers" width="20"></i>上课签到</a>
-                        </li>
-
-                            <li>
-                            <a href="/qiandao/qiandaomylist">     <i data-feather="layers" width="20"></i>我的签到信息</a>
-                        </li>
-                        {%  endif %}
-
-                       {% if request.session.qx == "管理员" or request.session.qx == "教师" %}
-
-                        <li>
-                            <a href="/qiandao/qiandaolist">     <i data-feather="layers" width="20"></i>签到管理</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-
+                <li>
+                    <a href="/jsjy/jsjytj"> <i data-feather="layers" width="20"></i>教室借用统计</a>
                 </li>
+                {% endif %}
 
-                <li class="sidebar-item  has-sub">
-                    <a href="#" class='sidebar-link'>
-                        <i data-feather="file-text" width="20"></i>
-                        <span>教室借用管理</span>
-                    </a>
+            </ul>
 
-                    <ul class="submenu ">
-
-
-                            {% if request.session.qx == "学生" %}
-                        <li>
-                            <a href="/jsjy/jsjyadd">     <i data-feather="layers" width="20"></i>申请教室借用</a>
-                        </li>
-
-
-                        <li>
-                            <a href="/jsjy/jsjymylist">     <i data-feather="layers" width="20"></i>我的教室借用</a>
-                        </li>
-
-                        {%  endif %}
-
-                         {% if request.session.qx == "管理员" or request.session.qx == "教师" %}
-
-                        <li>
-                            <a href="/jsjy/jsjylist">     <i data-feather="layers" width="20"></i>教室借用管理</a>
-                        </li>
-                                <li>
-                            <a href="/jsjy/jsjytj">     <i data-feather="layers" width="20"></i>教室借用统计</a>
-                        </li>
-                     {%  endif %}
-
-                    </ul>
-
-                </li>
-
-
- 
+        </li>
 
 
 
@@ -224,7 +232,8 @@
 
 
 
-        </ul>
-    </div>
 
 
+
+    </ul>
+</div>

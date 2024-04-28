@@ -18,6 +18,12 @@ from django.urls import path
 from app import  views
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # 测试初始化
+    path('init_data', views.init_data),
+    path('init_qiandao_data', views.init_qiandao_data),
+    path('qiandao/qiandao_data', views.qiandao_data),
+
     #主页
     path('login/', views.login),
     path('out/', views.out),
@@ -132,6 +138,8 @@ urlpatterns = [
     ###签到维护
     #签到添加
     path('qiandao/qiandaoadd', views.qiandaoadd),
+    path('qiandao/generate_qiandao', views.generate_qiandao),
+    path('qiandao/add_qiandao', views.add_qiandao),
     # 签到列表
     path('qiandao/qiandaolist', views.qiandaolist),
     # 我的签到列表

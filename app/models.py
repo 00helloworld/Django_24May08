@@ -63,6 +63,13 @@ class sksj(models.Model):
     js=models.CharField(max_length=40)#教室
 
 #签到表
+class qiandao_meta(models.Model):
+    kc=models.CharField(max_length=40)#课程
+    code = models.CharField(max_length=40)
+    rq=models.CharField(max_length=40)#日期
+    qdsj=models.CharField(max_length=40)#签到时间
+
+
 class qiandao(models.Model):
 	
     sksj=models.CharField(max_length=40)#上课时间
