@@ -12,6 +12,7 @@ import seaborn as sns
 from django.db.models import Sum
 from django.db.models import Count
 from django.contrib import messages
+from django.contrib.auth.hashers import make_password, check_password
 # Create your views here.
 
 from datetime import *
@@ -30,32 +31,33 @@ def login(request):
 
         qx = request.POST.get('qx')  # 密码
         if qx == "学生":
-            res = models.xuesheng.objects.filter(yhm=yhm, mm=mm).count()
+            res = models.xuesheng.objects.filter(yhm=yhm).first()
         if qx == "教师":
-            res = models.jiaoshi.objects.filter(yhm=yhm, mm=mm).count()
+            res = models.jiaoshi.objects.filter(yhm=yhm).first()
         if qx == "管理员":
-            res = models.gly.objects.filter(yhm=yhm, mm=mm).count()
-        if res == 0:
-               messages.success(request, "操作失败、用户名和密码不匹配")
-               return redirect('/login')
-        elif res > 0:
+            res = models.gly.objects.filter(yhm=yhm).first()
+        
+        if not (res and check_password(mm, res.mm)):
+            messages.success(request, "操作失败、用户名和密码不匹配")
+            return redirect('/login')
+        else:
             if qx == "学生":
-                obj = models.xuesheng.objects.filter(yhm=yhm, mm=mm).first()
-                request.session['id'] = obj.id
+                request.session['id'] = res.id
                 request.session['yhm'] = yhm
             if qx == "教师":
-                obj = models.jiaoshi.objects.filter(yhm=yhm, mm=mm).first()
-                request.session['id'] = obj.id
+                request.session['id'] = res.id
                 request.session['yhm'] = yhm
             if qx == "管理员":
-                obj = models.gly.objects.filter(yhm=yhm, mm=mm).first()
-                request.session['id'] = obj.id
+                request.session['id'] = res.id
             request.session['yhm'] = yhm
             request.session['mm'] = mm
             request.session['qx'] = qx
 
 
-        return redirect('/sksj/kebiao')
+        return redirect('/home')
+    
+def home(request):
+    return render(request, "home.html")
 
 def out(request):
     request.session['id'] = ''
@@ -80,7 +82,7 @@ def glyadd(request):
             messages.success(request, "操作失败、用户名重复")
         elif res == 0:
             messages.success(request, "操作成功")
-            models.gly.objects.create(yhm=yhm, mm=mm, xm=xm, )
+            models.gly.objects.create(yhm=yhm, mm=make_password(mm), xm=xm, )
 
 
         #return render(request, "gly/glyadd.html")
@@ -111,7 +113,7 @@ def glymodify(request):
     mm = request.POST.get('mm') #密码
     xm = request.POST.get('xm') #姓名
     messages.success(request, "操作成功")
-    ret = models.gly.objects.filter(id=id).update(yhm=yhm,mm=mm,xm=xm, )
+    ret = models.gly.objects.filter(id=id).update(yhm=yhm,mm=make_password(mm),xm=xm, )
 
     return redirect('/gly/glylist')
 
@@ -128,7 +130,7 @@ def glymod(request):
     mm = request.POST.get('mm') #密码
     xm = request.POST.get('xm') #姓名
     messages.success(request, "操作成功")
-    ret = models.gly.objects.filter(id=id).update(yhm=yhm,mm=mm,xm=xm, )
+    ret = models.gly.objects.filter(id=id).update(yhm=yhm,mm=make_password(mm),xm=xm, )
 
     return redirect('/gly/glymod')
 
@@ -168,7 +170,7 @@ def jiaoshiadd(request):
             messages.success(request, "操作失败、用户名重复")
         elif res == 0:
             messages.success(request, "操作成功")
-            models.jiaoshi.objects.create(yhm=yhm, mm=mm, xm=xm, lxdh=lxdh, zc=zc, )
+            models.jiaoshi.objects.create(yhm=yhm, mm=make_password(mm), xm=xm, lxdh=lxdh, zc=zc, )
 
 
         #return render(request, "jiaoshi/jiaoshiadd.html")
@@ -201,7 +203,7 @@ def jiaoshimodify(request):
     lxdh = request.POST.get('lxdh') #联系电话
     zc = request.POST.get('zc') #职称
     messages.success(request, "操作成功")
-    ret = models.jiaoshi.objects.filter(id=id).update(yhm=yhm,mm=mm,xm=xm,lxdh=lxdh,zc=zc, )
+    ret = models.jiaoshi.objects.filter(id=id).update(yhm=yhm,mm=make_password(mm),xm=xm,lxdh=lxdh,zc=zc, )
 
     return redirect('/jiaoshi/jiaoshilist')
 
@@ -221,7 +223,7 @@ def jiaoshimod(request):
     lxdh = request.POST.get('lxdh') #联系电话
     zc = request.POST.get('zc') #职称
     messages.success(request, "操作成功")
-    ret = models.jiaoshi.objects.filter(id=id).update(yhm=yhm,mm=mm,xm=xm,lxdh=lxdh,zc=zc, )
+    ret = models.jiaoshi.objects.filter(id=id).update(yhm=yhm,mm=make_password(mm),xm=xm,lxdh=lxdh,zc=zc, )
 
     return redirect('/jiaoshi/jiaoshimod')
 
@@ -261,7 +263,7 @@ def xueshengadd(request):
             messages.success(request, "操作失败、用户名重复")
         elif res == 0:
             messages.success(request, "操作成功")
-            models.xuesheng.objects.create(yhm=yhm, mm=mm, xm=xm, lxdh=lxdh, zy=zy, )
+            models.xuesheng.objects.create(yhm=yhm, mm=make_password(mm), xm=xm, lxdh=lxdh, zy=zy, )
 
 
         #return render(request, "xuesheng/xueshengadd.html")
@@ -294,7 +296,7 @@ def xueshengmodify(request):
     lxdh = request.POST.get('lxdh') #联系电话
     zy = request.POST.get('zy') #专业
     messages.success(request, "操作成功")
-    ret = models.xuesheng.objects.filter(id=id).update(yhm=yhm,mm=mm,xm=xm,lxdh=lxdh,zy=zy, )
+    ret = models.xuesheng.objects.filter(id=id).update(yhm=yhm,mm=make_password(mm),xm=xm,lxdh=lxdh,zy=zy, )
 
     return redirect('/xuesheng/xueshenglist')
 #修改学生
@@ -312,7 +314,7 @@ def xueshengmod(request):
     lxdh = request.POST.get('lxdh') #联系电话
     zy = request.POST.get('zy') #专业
     messages.success(request, "操作成功")
-    ret = models.xuesheng.objects.filter(id=id).update(yhm=yhm,mm=mm,xm=xm,lxdh=lxdh,zy=zy, )
+    ret = models.xuesheng.objects.filter(id=id).update(yhm=yhm,mm=make_password(mm),xm=xm,lxdh=lxdh,zy=zy, )
 
     return redirect('/xuesheng/xueshengmod')
 
@@ -1095,7 +1097,7 @@ def qiandao_data(request):
         kc = request.POST.get('kc')
         qiandao = models.qiandao.objects.filter(kc=kc).all()
         student = models.xuesheng.objects.all()
-        ratios = [round(len(qiandao)/len(student), 1), round(1-len(qiandao)/len(student), 1)]
+        ratios = [round(len(qiandao)/len(student), 3), round(1-len(qiandao)/len(student), 3)]
         categories = ['Present', 'Absent']
         matplotlib.use('Agg')  # 不出现画图的框
         # plt.rcParams['font.sans-serif'] = ['SimHei']  # 这两行用来显示汉字
@@ -1114,18 +1116,6 @@ def qiandao_data(request):
         return render(request, 'qiandao/qiandao_data.html', {'kc': kc,'src': src, 'kclist':kclist})
     return render(request, 'qiandao/qiandao_data.html', {'kclist':kclist})
 
-    # matplotlib.use('Agg')  # 不出现画图的框
-    # plt.rcParams['font.sans-serif'] = ['SimHei']  # 这两行用来显示汉字
-    # plt.rcParams['axes.unicode_minus'] = False
-    # sns.boxplot([133,123,899,198,849,180,844])  # 箱线图
-    # plt.title('title', loc='center')
-    # sio = BytesIO()
-    # plt.savefig(sio, format='png', bbox_inches='tight', pad_inches=0.0)
-    # data = base64.encodebytes(sio.getvalue()).decode()
-    # src = 'data:image/png;base64,' + str(data)
-    # # 记得关闭，不然画出来的图是重复的
-    # plt.close()
-    # return render(request, 'qiandao/qiandao_data.html', {'src': src})
 
 
 
@@ -1137,7 +1127,7 @@ def init_data(request):
     xm = 'admin' #姓名
     res = models.gly.objects.filter(yhm=yhm).count()
     if res == 0:
-        models.gly.objects.create(yhm=yhm, mm=mm, xm=xm, )
+        models.gly.objects.create(yhm=yhm, mm=make_password(mm), xm=xm, )
     # teacher
     for i in range(2):
         yhm = f'teacher_{i}' #用户名
@@ -1147,7 +1137,7 @@ def init_data(request):
         zc = 'dasfdsgdsa' #职称
         res = models.jiaoshi.objects.filter(yhm=yhm).count()
         if res == 0:
-            models.jiaoshi.objects.create(yhm=yhm, mm=mm, xm=xm, lxdh=lxdh, zc=zc, )
+            models.jiaoshi.objects.create(yhm=yhm, mm=make_password(mm), xm=xm, lxdh=lxdh, zc=zc, )
     # student
     for i in range(100):
         yhm = f'student_{i}' #用户名
@@ -1158,7 +1148,7 @@ def init_data(request):
 
         res = models.xuesheng.objects.filter(yhm=yhm).count()
         if res == 0:
-            models.xuesheng.objects.create(yhm=yhm, mm=mm, xm=xm, lxdh=lxdh, zy=zy, )
+            models.xuesheng.objects.create(yhm=yhm, mm=make_password(mm), xm=xm, lxdh=lxdh, zy=zy, )
     # week
     for i in ['一', '二', '三', '四', '五', '六', '日']:
         xq = i #星期

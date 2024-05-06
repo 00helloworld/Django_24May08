@@ -27,6 +27,7 @@ urlpatterns = [
     #主页
     path('login/', views.login),
     path('out/', views.out),
+    path('home', views.home),
     ###管理员维护
     #管理员添加
     path('gly/glyadd', views.glyadd),
