@@ -1208,3 +1208,57 @@ def init_qiandao_data(request):
                 if qiandao == 0:
                     models.qiandao.objects.create(sksj=qdsj, xs=xs, zt=zt, rq=rq, qdsj=qdsj, qtsj=qtsj, kc=kc, )
     return HttpResponse("初始化数据成功")
+
+
+from collections import Counter
+def jsxxdata(request):
+    xqlist = models.xingqi.objects.all()
+    sjdlist = models.sjd.objects.all()
+    if request.method == 'POST':
+        xq = request.POST.get('xq')
+        sjd = request.POST.get('sjd')
+        print(xq, sjd)
+        if xq == '全部' and sjd == '全部':
+            sksjlist = models.sksj.objects.values_list('js', flat=True)
+        elif xq == '全部' and sjd != '全部':
+            sksjlist = models.sksj.objects.filter(sjd=sjd).values_list('js', flat=True)
+        elif xq != '全部' and sjd == '全部':
+            sksjlist = models.sksj.objects.filter(xq=xq).values_list('js', flat=True)
+        else:
+            sksjlist = models.sksj.objects.filter(xq=xq, sjd=sjd).values_list('js', flat=True)
+        
+        jiaoshi_counter = Counter(sksjlist)
+        sorted_jiaoshi = sorted(jiaoshi_counter.items(), key=lambda x: x[1], reverse=True)
+        jiaoshi = [item[0] for item in sorted_jiaoshi]
+        counts = [item[1] for item in sorted_jiaoshi]
+        if len(counts) > 0:
+            flag_1 = 'Y'
+        else:
+            flag_1 = 'N'
+        matplotlib.use('Agg')
+        plt.bar(jiaoshi, counts)
+        plt.xlabel('Classroom Name')
+        plt.ylabel('Count')
+        plt.title('Classroom Usage Count')
+        plt.xticks(rotation=45)
+        sio = BytesIO()
+        plt.savefig(sio, format='png', bbox_inches='tight', pad_inches=0.0)
+        data = base64.encodebytes(sio.getvalue()).decode()
+        src_1 = 'data:image/png;base64,' + str(data)
+        plt.close()
+
+        jslist = models.jsxx.objects.all()
+        print(counts)
+        ratios = [round(len(counts)/len(jslist), 2), round(1-len(counts)/len(jslist), 2)]
+        categories = ['Inuse', 'Vacant']
+        matplotlib.use('Agg')  
+        plt.pie(ratios, labels=categories, autopct='%1.1f%%', startangle=140)
+        plt.axis('equal')  # 保持图形是圆形
+
+        sio = BytesIO()
+        plt.savefig(sio, format='png', bbox_inches='tight', pad_inches=0.0)
+        data = base64.encodebytes(sio.getvalue()).decode()
+        src_2 = 'data:image/png;base64,' + str(data)
+        plt.close()
+        return render(request, 'jsxx/jsxxdata.html', {'xqlist': xqlist, 'flag_1': flag_1, 'src_1': src_1, 'flag_2': flag_1, 'src_2': src_2, 'sjdlist':sjdlist})
+    return render(request, 'jsxx/jsxxdata.html', {'xqlist': xqlist, 'sjdlist':sjdlist})

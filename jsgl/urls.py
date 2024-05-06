@@ -79,6 +79,8 @@ urlpatterns = [
     # 教室信息删除
     path('jsxx/jsxxdelete', views.jsxxdelete),
 
+    path('jsxx/jsxxdata', views.jsxxdata),
+
     ###星期维护
     #星期添加
     path('xingqi/xingqiadd', views.xingqiadd),
